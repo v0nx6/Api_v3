@@ -30,7 +30,7 @@ export const login = async (req: Request, res: Response) => {
 
     if (!compare) {
       res.status(404).json({
-        msg: "username and password wrong",
+        msg: "username and password wrong debug",
       });
       return;
     }
