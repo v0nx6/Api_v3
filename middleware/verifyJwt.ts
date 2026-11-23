@@ -14,16 +14,15 @@ export const verifyJwt = async (
   next: NextFunction,
 ) => {
   try {
-    const cookie = req.headers.authorization;
+    const token = req.cookies?.jwt;
 
-    if (!cookie?.startsWith("Bearer")) {
+    if (!token) {
       res.status(403).json({
         msg: "Forbidden",
       });
       return;
     }
 
-    const token = cookie.split(" ")[1];
     const secretKey = process.env.JWT_SECRET;
 
     if (!secretKey) {
@@ -38,6 +37,6 @@ export const verifyJwt = async (
     next();
   } catch (error) {
     console.error(error);
-    res.sendStatus(500);
+    res.sendStatus(401);
   }
 };

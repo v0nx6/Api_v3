@@ -18,14 +18,29 @@ export const updateFunction = async (req: Request, res: Response) => {
     const findUser = await User.findOne({ _id: userInfo?.userId });
     const { username, password, email } = paylaod.data;
 
-    if (!findUser || !username || !password || !email) {
+    if (!findUser) {
       res.status(404).json({
         msg: "user not found",
       });
       return;
     }
-    const hash: string = await (bcrypt.hash(password, 10) as Promise<string>);
-    await update(findUser._id.toString(), username, hash, email);
+
+    if (password && password.length < 8) {
+      res.status(400).json({
+        msg: "password length required minimun 8 characters",
+      });
+      return;
+    }
+    let hash: string | undefined = undefined;
+
+    if (password) {
+      hash = await (bcrypt.hash(password, 10) as Promise<string>);
+    }
+
+    const usernameCheck = username ?? findUser.username;
+    const emailCheck = email ?? findUser.email;
+
+    await update(findUser._id.toString(), usernameCheck, hash, emailCheck);
 
     res.status(201).json({
       msg: "success to update data",
@@ -41,6 +56,7 @@ export const updateFunction = async (req: Request, res: Response) => {
       });
       return;
     }
+    res.sendStatus(500);
     console.error(error);
   }
 };
