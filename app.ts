@@ -6,6 +6,7 @@ app.disable("x-powered-by");
 const URL = process.env.MONGO_URL!;
 import cookieparser from "cookie-parser";
 import api from "./route/api";
+import apiProduct from "./route/apiProduct";
 import helmet from "helmet";
 import morgan from "morgan";
 
@@ -30,3 +31,4 @@ app.use(helmet());
 app.use(morgan("dev"));
 
 app.use("/api", api);
+app.use("/api/product", apiProduct);
