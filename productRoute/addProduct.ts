@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { addProductRequirement } from "../service/addProductService";
 import { addProduct } from "../service/addProductService";
+import Product from "../schema/productSchema";
 
 export const add = async (req: Request, res: Response) => {
   try {
@@ -25,6 +26,17 @@ export const add = async (req: Request, res: Response) => {
     }
 
     const userId = userInfo.userId;
+
+    const findProduct = await Product.findOne({
+      $and: [{ itemName: product.data.itemName }, { seller: userId }],
+    });
+
+    if (findProduct) {
+      res.status(409).json({
+        msg: "you already add this produt",
+      });
+      return;
+    }
 
     await addProduct(product.data, userId);
 

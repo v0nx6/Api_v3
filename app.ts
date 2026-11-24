@@ -30,5 +30,5 @@ app.use(cookieparser());
 app.use(helmet());
 app.use(morgan("dev"));
 
-app.use("/api", api);
+app.use("/api/users", api);
 app.use("/api/product", apiProduct);
